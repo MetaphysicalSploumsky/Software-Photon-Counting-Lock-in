@@ -170,3 +170,4 @@ if __name__ == "__main__":
 # phi: -1.567129 rad  (± 0.035500)
 
 # phases match with z = Q + iI. Nice.
+# TODO: assess shot noise limit; A = 100%/sqrt(N), sigPhi = 360/sqrt(N)

@@ -159,3 +159,4 @@ if __name__ == "__main__":
     main()
 
 # python liu_lockin.py data/laserON_modulated_200s.ptu --ch-ph 1 --marker-bit 2 --N 10 --duty 0.5
+# TODO: assess linearity, high power to very low power
