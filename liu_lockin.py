@@ -150,6 +150,7 @@ def main():
             print(f"  I (signed)       : {row['I']}")
             print(f"  Q (signed)       : {row['Q']}")
             print(f"  S = |I| + |Q|    : {row['S']}   (photon-number output)")
+            # add a rate output here 
             print(f"  ON_I/OFF_I       : {row['ON_I']} / {row['OFF_I']}")
             print(f"  ON_Q/OFF_Q       : {row['ON_Q']} / {row['OFF_Q']}")
             print(f"  Total photons    : {row['TOT']}")
