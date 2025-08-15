@@ -150,3 +150,23 @@ if __name__ == "__main__":
 # python braun_lockin_jakob.py data/background_180s.ptu --ch-ph 1 --marker-bit 1 --N 10
 
 # this one uses a local frequency for each photon. that's the better mehtod -> returns 0.84 (expected ~1)
+
+# PS F:\Projects\Work2025Photonics\Braun> python liu_lockin.py data/laserON_modulated_200s.ptu --ch-ph 1 --marker-bit 2 --N 10 --duty
+#  0.5
+# File: data/laserON_modulated_200s.ptu
+# Photon ch=1, marker-bit=2, N=10, duty=0.5
+# RESULT — Liu I/Q lock-in photon counting:
+#   I (signed)       : -20652
+#   Q (signed)       : 6
+#   S = |I| + |Q|    : 20658   (photon-number output)
+#   ON_I/OFF_I       : 5337 / 25989
+#   ON_Q/OFF_Q       : 15666 / 15660
+#   Total photons    : 31326
+# (.venv) PS F:\Projects\Work2025Photonics\Braun> python braun_lockin_jakob.py data/laserON_modulated_200s.ptu --ch-ph 1 --marker-bit 1 --N 10
+# Reader: PicoHarp 300 T2
+# Photons used: 31,326 / total 31,326   Ref edges: 2,001,297   N_fit=10
+# Ref f ≈ 10002.631 Hz  (from median period)
+# A (1f phasor): 0.844219 ± 0.005650
+# phi: -1.567129 rad  (± 0.035500)
+
+# phases match with z = Q + iI. Nice.
