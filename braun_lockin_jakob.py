@@ -115,11 +115,11 @@ def main():
     print(f"A (1f phasor): {res['A']:.6f} ± {res['sigA']:.6f}")
     print(f"phi: {res['phi']:.6f} rad  (± {res['sigPhi']:.6f})")
     # If you expect 50% duty on/off, the 1f amplitude for ideal gating is 4/π ≈ 1.273
-    print(f"Square-wave note: if fully gated D=0.5, expect A≈4/π≈{4/np.pi:.4f}")
+    # print(f"Square-wave note: if fully gated D=0.5, expect A≈4/π≈{4/np.pi:.4f}")
     # Convert A → “depth” only for 50% duty using the 1f relation
-    depth_from_A = (np.pi / 4.0) * res['A']
-    print(f"Depth from A (assuming D=0.5): {depth_from_A:.4f} (1.0 would be 100% on/off)")
-    print(f"Depth from histogram split:   {contrast:.4f}   (on={on:,}, off={off:,})")
+    # depth_from_A = (np.pi / 4.0) * res['A']
+    # print(f"Depth from A (assuming D=0.5): {depth_from_A:.4f} (1.0 would be 100% on/off)")
+    # print(f"Depth from histogram split:   {contrast:.4f}   (on={on:,}, off={off:,})")
 
     # Optional histogram
     if args.ascii:
@@ -145,4 +145,8 @@ def main():
 
 if __name__ == "__main__":
     main()
-# raun_lockin_jakob.py data/laserON_modulated_200s.ptu --ch-ph 1 --marker-bit 1 --N 10
+# python braun_lockin_jakob.py data/laserON_modulated_200s.ptu --ch-ph 1 --marker-bit 1 --N 10
+# python braun_lockin_jakob.py data/3mW_100kHzSine.ptu --ch-ph 1 --marker-bit 1 --N 10
+# python braun_lockin_jakob.py data/background_180s.ptu --ch-ph 1 --marker-bit 1 --N 10
+
+# this one uses a local frequency for each photon. that's the better mehtod -> returns 0.84 (expected ~1)

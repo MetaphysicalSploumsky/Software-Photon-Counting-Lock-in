@@ -220,4 +220,7 @@ def _main():
 
 if __name__ == "__main__":
     _main()
-# python braun.py data/laserON_modulated_200s.ptu --ch-ph 1 --marker-bit 1 --basis sine --oversample 50
+# python braun.py data/laserON_modulated_200s.ptu --ch-ph 1 --marker-bit 1 --basis square --oversample 50
+# python braun.py data/3mW_100kHzSine.ptu --ch-ph 1 --marker-bit 1 --basis sine --oversample 50
+
+# this one uses a single global frequency. Does not track drift -> returns 0.007 (expected ~1)
