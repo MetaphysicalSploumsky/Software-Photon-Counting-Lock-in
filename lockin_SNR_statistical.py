@@ -30,10 +30,10 @@ import argparse, math, sys, statistics
 from typing import Dict, Any, List, Tuple
 import numpy as np
 
-from reader import read_ptu  # your provided PicoHarp 300 T2 reader
+from reader import read_ptu  
 
 
-# ----------------- helpers (Liu I/Q demod essentials) -----------------
+# ----------------- helpers (Liu I/Q demod) -----------------
 def select_marker_times(markers, bit:int) -> np.ndarray:
     mask = 1 << (bit-1)
     ts = [tt for mk, tt in markers if (mk & mask) != 0]

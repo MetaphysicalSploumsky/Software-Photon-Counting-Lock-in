@@ -1,7 +1,7 @@
 # braun_lockin_jakob.py — PTU → Jakob dynamic-fit phases → phasor A,phi and contrast
 import argparse
 import numpy as np
-from reader import read_ptu  # your minimal PH300 T2 reader that returns ps
+from reader import read_ptu  # PH300 T2 reader that returns ps
 
 def phases_jakob(chopper_ps: np.ndarray, photon_ps: np.ndarray, N: int = 10):
     """
@@ -81,10 +81,10 @@ def main():
     args = ap.parse_args()
 
     # --- read PTU & build reference from markers ---
-    header, ch, markers, reader = read_ptu(args.ptu)
-    t_ph = ch.get(args.ch_ph, np.array([], dtype=np.int64))
-    bitmask = 1 << args.marker_bit
-    t_ref = np.asarray([t for mk, t in markers if (mk & bitmask) != 0], dtype=np.int64)
+    marker_times, photon_times = read_ptu(args.ptu)
+    t_ph = photon_times
+    # bitmask = 1 << args.marker_bit
+    t_ref = marker_times
     if t_ref.size < args.N or t_ph.size == 0:
         print("Not enough reference edges or photons.")
         return
@@ -103,13 +103,13 @@ def main():
 
     # --- phasor & contrast ---
     res = phasor_from_phases(theta)
-    contrast, on, off = estimate_contrast_from_hist(theta)
+    # contrast, on, off = estimate_contrast_from_hist(theta)
 
     # frequency sanity from refs
     med_dt_ps = float(np.median(np.diff(t_ref)))
     f_med = 1e12 / med_dt_ps if med_dt_ps > 0 else np.nan
 
-    print(f"Reader: {reader}")
+    # print(f"Reader: {reader}")
     print(f"Photons used: {res['N']:,} / total {t_ph.size:,}   Ref edges: {t_ref.size:,}   N_fit={args.N}")
     print(f"Ref f ≈ {f_med:.3f} Hz  (from median period)")
     print(f"A (1f phasor): {res['A']:.6f} ± {res['sigA']:.6f}")
@@ -145,9 +145,16 @@ def main():
 
 if __name__ == "__main__":
     main()
-# python braun_lockin_jakob.py data/laserON_modulated_200s.ptu --ch-ph 1 --marker-bit 1 --N 10
-# python braun_lockin_jakob.py data/3mW_100kHzSine.ptu --ch-ph 1 --marker-bit 1 --N 10
-# python braun_lockin_jakob.py data/background_180s.ptu --ch-ph 1 --marker-bit 1 --N 10
+# python3 braun_lockin_jakob.py data/august18/Amplitude-Phase-Flatness/500Hz-1mW-1s.ptu  --N 10
+# python3 braun_lockin_jakob.py data/august18/Amplitude-Phase-Flatness/1000Hz-1mW-1s.ptu  --N 10
+# python3 braun_lockin_jakob.py data/august18/Amplitude-Phase-Flatness/2000Hz-1mW-1s.ptu  --N 10
+# python3 braun_lockin_jakob.py data/august18/Amplitude-Phase-Flatness/5000Hz-1mW-1s.ptu  --N 10
+# python3 braun_lockin_jakob.py data/august18/Amplitude-Phase-Flatness/10000Hz-1mW-1s.ptu --N 10
+# python3 braun_lockin_jakob.py data/august18/Amplitude-Phase-Flatness/1500Hz-1mW-1s.ptu  --N 10
+
+# here real and imaginary parts are inverted wrt to Liu lockin: z = Q + iI
+
+# python3 braun_lockin_jakob.py data/background_180s.ptu --ch-ph 1 --marker-bit 1 --N 10
 
 # this one uses a local frequency for each photon. that's the better mehtod -> returns 0.84 (expected ~1)
 
