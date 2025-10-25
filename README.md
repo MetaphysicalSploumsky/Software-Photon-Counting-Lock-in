@@ -63,6 +63,19 @@ Each tool provides:
 - Statistical summaries (photon counts, reference edges)
 - CSV export options for further analysis
 - Visualization (phase histograms, lifetime fits)
+- 
+### Example CLI Output:
+
+File: modulated_signal.ptu
+RESULT — Braun photon-counting lock-in:
+  f_ref            : 1000.123456 Hz
+  f_sample         : 50006.172800 Hz   (M = 50 bins/period)
+  bins / photons   : 25000 / 75000
+  I_dc (mean/bin)  : 3.000000 counts/bin
+  A (mod depth)    : 0.15000000
+  phi              : 0.785398163 rad  (45.000000 deg)
+  bins_per_period  : 50
+  trimmed periods  : 1 at start and end
 
 ## Demo Results
 
