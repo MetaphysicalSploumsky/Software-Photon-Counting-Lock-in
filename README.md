@@ -72,7 +72,7 @@ Each tool provides:
 
 ### Frequency-Domain Lifetime Analysis
 ![FDLM Analysis](demo/fdlm_curve.png)
-*Frequency-domain lifetime measurement showing phase vs modulation frequency. The curve fit demonstrates single-exponential decay behavior with τ = 4.2 ns.*
+*Frequency-domain lifetime measurement showing phase vs modulation frequency. The curve fit demonstrates single-exponential decay behavior with τ =  1.5 μs.*
 
 ### Lifetime from Phase Histogram
 ![Lifetime from Phase](demo/lifetime_phase_histogram.png)
@@ -101,22 +101,21 @@ Each tool provides:
 ## Sources
 
 ### Core Methods
-- **Braun & Libchaber (2002)** - *"Trapping of DNA by dielectrophoretic cage in microfluidic arrays"* - Optics Letters 27, 1418 (2002)
-- **Liu et al.** - Reference-weighted counting method for photon lock-in detection
-- **Jakob phase analysis** - Dynamic linear fitting for robust period estimation against frequency drift
+- **Braun, Dieter & Libchaber, Albert.** (2002). Computer-based photon-counting lock-in for phase detection at the shot-noise limit. Optics Letters. 27. 1418-1420. 10.1364/OL.27.001418. 
+- **D. Liu et al.** "Toward Quantitative Near Infrared Brain Functional Imaging: Lock-In Photon Counting Instrumentation Combined With Tomographic Reconstruction," in IEEE Access, vol. 7, pp. 86829-86842, 2019, doi: 10.1109/ACCESS.2019.2924710.
+keywords: {Photonics;Instruments;Frequency modulation;Optical imaging;Optical sensors;Functional near-infrared spectroscopic imaging;diffuse optical tomography;square-wave modulation;lock-in photon-counting},
+- **Chen W, Wang X, Wang B, Wang Y, Zhang Y, Zhao H, Gao F.** Lock-in-photon-counting-based highly-sensitive and large-dynamic imaging system for continuous-wave diffuse optical tomography. Biomed Opt Express. 2016 Jan 15;7(2):499-511. doi: 10.1364/BOE.7.000499. PMID: 26977358; PMCID: PMC4771467.
+- **L. Jakob, W. Deacon, O. Hicks, I. Manyakin, O. Ojambati, M. Traxler, and J. Baumberg** "Single photon multiclock lock-in detection by picosecond timestamping," Optica  8, 1646-1653 (2021).
 
 ### Technical References
 - **PicoHarp 300/330** - PicoQuant TCSPC system documentation and file formats
-- **Frequency-domain lifetime** - Standard FD fluorescence lifetime measurement principles
-- **Photon counting statistics** - Shot noise limits and signal processing in low-light conditions
+- (2006). Frequency-Domain Lifetime Measurements. In: Lakowicz, J.R. (eds) Principles of Fluorescence Spectroscopy. Springer, Boston, MA. https://doi.org/10.1007/978-0-387-46312-4_5
 
 ### Implementation Notes
 - PTU file format based on PicoQuant's "Read_PTU.py" reference implementation
-- Some algorithms adapted from laboratory implementations and optimized for Python
 - Error handling and edge cases tested with experimental data
 
 ## Notes
-
 - Marker bits are zero-based (0-3) in all scripts
 - The Jakob phase method provides robust period estimation against frequency drift
 - Frequency-domain lifetime fitting supports both phase-only and joint amplitude-phase methods
