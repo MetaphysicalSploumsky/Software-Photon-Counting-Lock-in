@@ -24,6 +24,70 @@ Notes:
   * Phase-only fit is robust to square vs sine drive (locking at 1f).
 """
 
+# ------ helpers -------
+# messed up my refactoring so now i need this to do fdlm
+import argparse
+import numpy as np
+from reader import read_ptu 
+
+def phases_jakob(chopper_ps: np.ndarray, photon_ps: np.ndarray, N: int = 10):
+   
+    if chopper_ps.size < N or photon_ps.size == 0:
+        return np.array([]), np.zeros(photon_ps.size, dtype=bool)
+    idx = np.searchsorted(chopper_ps, photon_ps, side="right")
+    valid = idx >= N
+    if not valid.any():
+        return np.array([]), valid
+
+    k = idx[valid]                           # (M,)
+    t_ph = photon_ps[valid].astype(float)    # (M,)
+    # windows of last N ticks per photon
+    start = k - N                            # (M,)
+    W = start[:, None] + np.arange(N)[None, :]      # (M,N)
+    y = chopper_ps[W].astype(float)                  # (M,N)
+
+    # Fit y ≈ slope*x + intercept for each row; x = 0..N-1 (so last tick x_last=N-1)
+    x = np.arange(N, dtype=float)
+    xm = x.mean()
+    xv = x.var()
+    ym = y.mean(axis=1)
+    cov = ((y - ym[:, None]) * (x - xm)).sum(axis=1) / N
+    slope = cov / xv                                  # period in ps
+    intercept = ym - slope * xm
+    t_last = intercept + slope * x[-1]
+
+    # fractional phase since last tick
+    frac = ((t_ph - t_last) / slope) % 1.0            # [0,1)
+    theta = 2 * np.pi * frac                          # [0,2π)
+    return theta, valid
+
+def phasor_from_phases(theta: np.ndarray):
+    if theta.size == 0:
+        raise ValueError("No phases provided.")
+    Z = np.exp(1j * theta).sum()
+    N = theta.size
+    A = 2 * np.abs(Z) / N
+    phi = float(np.angle(Z))
+    sigA = 1.0 / np.sqrt(N)
+    sigPhi = 2 * np.pi / np.sqrt(N)
+    return dict(A=float(A), phi=phi, sigA=float(sigA), sigPhi=float(sigPhi), N=int(N))
+
+def estimate_contrast_from_hist(theta: np.ndarray):
+    
+    if theta.size == 0:
+        return np.nan, 0, 0
+    # rotate by -phi so that ON window is centered around 0
+    Z = np.exp(1j * theta).mean()
+    phi_mean = np.angle(Z)
+    thetac = (theta - phi_mean) % (2 * np.pi)
+    on = np.sum(thetac < np.pi)
+    off = theta.size - on
+    if on + off == 0:
+        return np.nan, on, off
+    contrast = (on - off) / (on + off)
+    return float(contrast), int(on), int(off)
+
+
 import argparse, math, sys, csv
 from dataclasses import dataclass
 from pathlib import Path
@@ -33,14 +97,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 _has_braun = False
-try:
-    from .fdlm_helper import phases_jakob as jakob_phases  # type: ignore
-    from .fdlm_helper import phasor_from_phases
-    _has_braun = True
-except Exception:
-    _has_braun = False
+# try:
+#     from .fdlm_helper import phases_jakob as jakob_phases  # type: ignore
+#     from .fdlm_helper import phasor_from_phases
+#     _has_braun = True
+# except Exception:
+#     _has_braun = False
 
-from reader import read_ptu  # returns: header, times_by_channel{1..4}->ps(int64), markers[(mk:int, ps:int64)], reader_name
+from reader import read_ptu 
 
 
 @dataclass
@@ -97,20 +161,6 @@ def phases_fallback(chopper_ps: np.ndarray, photon_ps: np.ndarray, N: int = 4) -
     return theta, valid
 
 
-# def phasor_from_phases(theta: np.ndarray) -> Dict[str, float]:
-#     """Compute 1f phasor amplitude A and phase phi from per-photon phases (θ in [0,2π))."""
-#     if theta.size == 0:
-#         return dict(A=np.nan, phi=np.nan, N=0, sigA=np.nan, sigPhi=np.nan)
-#     z = np.exp(1j * theta).sum()
-#     N = theta.size
-#     A = 2.0 * np.abs(z) / N
-#     phi = float(np.angle(z))
-#     # Simple shot-noise estimates (order-of-magnitude)
-#     sigA = 1.0 / math.sqrt(N)
-#     sigPhi = 2.0 * math.pi / math.sqrt(N)
-#     return dict(A=float(A), phi=phi, N=int(N), sigA=float(sigA), sigPhi=float(sigPhi))
-
-
 def estimate_frequency_from_edges(chop_ps: np.ndarray) -> float:
     """Estimate Hz from median edge-to-edge period (robust)."""
     if chop_ps.size < 2:
@@ -119,7 +169,7 @@ def estimate_frequency_from_edges(chop_ps: np.ndarray) -> float:
     med = np.median(d)
     if med <= 0:
         return float("nan")
-    return 1e12 / med  # ps → Hz
+    return 1e12 / med  # type: ignore # ps → Hz
 
 
 # Models
@@ -134,13 +184,13 @@ def m_model(omega: np.ndarray, tau: float) -> np.ndarray:
 # -------------------- Core processing --------------------
 
 def process_file(ptu_path: Path, photon_channel: int, marker_bit_zero_based: int, N_fit: int) -> FileResult:
-    header, times_by_channel, markers, reader_name = read_ptu(str(ptu_path))
+    header, times_by_channel, markers, reader_name = read_ptu(str(ptu_path)) # pyright: ignore[reportAssignmentType]
 
     # Photons:
     if photon_channel not in times_by_channel:
         raise RuntimeError(
             f"No photons on channel {photon_channel} for {ptu_path.name}. "
-            f"Channels present: {sorted(times_by_channel.keys())}."
+            f"Channels present: {sorted(times_by_channel.keys())}." # type: ignore
         )
     photon_ps = times_by_channel[photon_channel]
     if photon_ps.size == 0:
@@ -167,10 +217,10 @@ def process_file(ptu_path: Path, photon_channel: int, marker_bit_zero_based: int
         theta, valid = phases_fallback(chop_ps, photon_ps, N=N_fit)
         theta = theta[valid]
 
-    res = phasor_from_phases(theta)
+    res = phasor_from_phases(theta) 
 
     f_Hz = estimate_frequency_from_edges(chop_ps)
-    return FileResult(path=ptu_path, f_Hz=f_Hz, omega=2 * np.pi * f_Hz, A=res["A"], phi=res["phi"], Nphot=res["N"])
+    return FileResult(path=ptu_path, f_Hz=f_Hz, omega=2 * np.pi * f_Hz, A=res["A"], phi=res["phi"], Nphot=res["N"]) # type: ignore
 
 
 # -------------------- Fitting --------------------
