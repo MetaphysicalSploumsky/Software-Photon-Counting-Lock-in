@@ -34,8 +34,8 @@ import matplotlib.pyplot as plt
 
 _has_braun = False
 try:
-    from braun_lockin_jakob import phases_jakob as jakob_phases  # type: ignore
-    from braun_lockin_jakob import phasor_from_phases
+    from .fdlm_helper import phases_jakob as jakob_phases  # type: ignore
+    from .fdlm_helper import phasor_from_phases
     _has_braun = True
 except Exception:
     _has_braun = False

@@ -1,5 +1,3 @@
-**README.md**
-
 # Photon Counting Lock-in Analysis Tools
 
 This repository contains a collection of Python tools for analyzing photon counting data from PicoHarp TCSPC systems using various lock-in detection methods. These scripts process PTU files containing timestamp data to extract modulated signals and perform frequency-domain lifetime measurements.
@@ -84,5 +82,3 @@ numpy>=1.19.0
 matplotlib>=3.3.0
 scipy>=1.5.0
 ```
-
-The scripts require Python 3.7+ and have been tested with the listed package versions. No additional dependencies are needed beyond these common scientific Python libraries.

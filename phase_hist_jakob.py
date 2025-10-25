@@ -69,7 +69,7 @@ def main():
 
     # --- Read PTU ---
     header, ch, markers, reader = read_ptu(args.ptu) # type: ignore
-    t_ph = ch.get(args.ch_ph, np.array([], dtype=np.int64))
+    t_ph = ch.get(args.ch_ph, np.array([], dtype=np.int64)) # type: ignore
     mask = 1 << args.marker_bit
     t_ref = np.asarray([tps for (mk, tps) in markers if (mk & mask) != 0], dtype=np.int64)
     if t_ref.size == 0:
