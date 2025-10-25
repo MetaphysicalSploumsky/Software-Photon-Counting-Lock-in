@@ -310,5 +310,3 @@ if __name__ == "__main__":
     main()
 
 # python FDLM_1.py /path/to/ptu_folder --marker-bit 1 --photon-channel 1 --N 10 --savefig fdlm_fit.png
-# TODO: measure a fast scatterer at each frequency to obtain "initial" phi. Subtract from phi's measured on sample
-# then fit.
