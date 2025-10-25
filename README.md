@@ -110,7 +110,6 @@ RESULT — Braun photon-counting lock-in:
 
 ### Implementation Notes
 - PTU file format based on PicoQuant's "Read_PTU.py" reference implementation
-- Some algorithms adapted from laboratory implementations and optimized for Python
 - Error handling and edge cases tested with experimental data
 
 ## Notes
