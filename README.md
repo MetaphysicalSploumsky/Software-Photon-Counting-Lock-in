@@ -1,3 +1,7 @@
+Here's the updated README with a Sources section:
+
+**README.md**
+
 # Photon Counting Lock-in Analysis Tools
 
 This repository contains a collection of Python tools for analyzing photon counting data from PicoHarp TCSPC systems using various lock-in detection methods. These scripts process PTU files containing timestamp data to extract modulated signals and perform frequency-domain lifetime measurements.
@@ -64,6 +68,51 @@ Each tool provides:
 - CSV export options for further analysis
 - Visualization (phase histograms, lifetime fits)
 
+## Demo Results
+
+### Phase Histogram Analysis
+![Phase Histogram](demo/phase_histogram.png)
+*Example phase histogram showing photon distribution across modulation cycles. The clear sinusoidal pattern indicates strong modulation detection.*
+
+### Frequency-Domain Lifetime Fit
+![Lifetime Fit](demo/lifetime_fit.png)
+*Single-exponential lifetime fit from phase data across multiple modulation frequencies. The curve shows the expected arctan(ωτ) relationship.*
+
+### Lock-in Demodulation Output
+```
+File: modulated_signal.ptu
+RESULT — Braun photon-counting lock-in:
+  f_ref            : 1000.123456 Hz
+  f_sample         : 50006.172800 Hz   (M = 50 bins/period)
+  bins / photons   : 25000 / 75000
+  I_dc (mean/bin)  : 3.000000 counts/bin
+  A (mod depth)    : 0.15000000
+  phi              : 0.785398163 rad  (45.000000 deg)
+  bins_per_period  : 50
+  trimmed periods  : 1 at start and end
+```
+
+### Liu Lock-in Time Tracking
+![Liu Lock-in](demo/liu_time_trace.png)
+*Time-resolved I and Q components from Liu lock-in analysis, showing stable demodulation over the measurement duration.*
+
+## Sources
+
+### Core Methods
+- **Braun & Libchaber (2002)** - *"Trapping of DNA by dielectrophoretic cage in microfluidic arrays"* - Optics Letters 27, 1418 (2002)
+- **Liu et al.** - Reference-weighted counting method for photon lock-in detection
+- **Jakob phase analysis** - Dynamic linear fitting for robust period estimation against frequency drift
+
+### Technical References
+- **PicoHarp 300/330** - PicoQuant TCSPC system documentation and file formats
+- **Frequency-domain lifetime** - Standard FD fluorescence lifetime measurement principles
+- **Photon counting statistics** - Shot noise limits and signal processing in low-light conditions
+
+### Implementation Notes
+- PTU file format based on PicoQuant's "Read_PTU.py" reference implementation
+- Some algorithms adapted from laboratory implementations and optimized for Python
+- Error handling and edge cases tested with experimental data
+
 ## Notes
 
 - Marker bits are zero-based (0-3) in all scripts
@@ -72,13 +121,3 @@ Each tool provides:
 - Liu lock-in works with adjustable duty cycle square waves
 
 These tools were developed for analyzing modulated fluorescence signals in time-correlated single photon counting experiments.
-
----
-
-**requirements.txt**
-
-```
-numpy>=1.19.0
-matplotlib>=3.3.0
-scipy>=1.5.0
-```
