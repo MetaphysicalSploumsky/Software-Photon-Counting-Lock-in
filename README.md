@@ -70,7 +70,7 @@ Command:
 ```
 python3 braun_lockin.py <filename.ptu>
 ```
-RESULT:
+Result:
 ```
   f_ref            : 1000.123456 Hz
   f_sample         : 50006.172800 Hz   (M = 50 bins/period)
