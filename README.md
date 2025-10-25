@@ -128,7 +128,6 @@ keywords: {Photonics;Instruments;Frequency modulation;Optical imaging;Optical se
 
 ## Notes
 - Marker bits are zero-based (0-3) in all scripts
-- The Jakob phase method provides robust period estimation against frequency drift
 - Frequency-domain lifetime fitting supports both phase-only and joint amplitude-phase methods
 - Liu lock-in works with adjustable duty cycle square waves
 
