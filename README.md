@@ -66,7 +66,10 @@ Each tool provides:
   
 ### Example CLI Output:
 
-Run: ```python3 braun_lockin.py <filename.ptu> ```
+Command: 
+```
+python3 braun_lockin.py <filename.ptu>
+```
 RESULT:
 ```
   f_ref            : 1000.123456 Hz
