@@ -6,20 +6,10 @@ This project provides a robust, event-based software implementation of a lock-in
 
 ## Features
 
-  * [cite\_start]**Event-Based Lock-In:** Implements a digital lock-in algorithm directly on PicoHarp time-tag data (PTU format) to extract AC-modulated signal components[cite: 14].
-  * [cite\_start]**Performance Benchmarking:** Includes signal-to-noise ratio (SNR) benchmarks to define regimes where the lock-in approach is superior to simple sequential ON/OFF subtraction[cite: 15, 16].
-  * [cite\_start]**Frequency-Domain Analysis:** Full FDLM pipeline for fitting frequency-domain lifetime data[cite: 17].
-  * [cite\_start]**Data Diagnostics:** Incorporates $\chi^{2}$ diagnostics and per-frequency phase-offset calibration (from fast scatter) to ensure fit quality and accuracy[cite: 17].
-  * [cite\_start]**High Performance:** Optimized with **Numba** for efficient, low-level computation[cite: 13].
-
-## Technical Stack
-
-| Category | Tools & Libraries |
-| :--- | :--- |
-| **Language** | [cite\_start]Python [cite: 13] |
-| **Core Libraries** | [cite\_start]NumPy, SciPy [cite: 13] |
-| **Optimization** | [cite\_start]Numba [cite: 13] |
-| **Hardware Interfacing** | [cite\_start]PicoQuant PTU (Data Format) [cite: 13][cite\_start], LabVIEW (used for hardware control) [cite: 13] |
+* **Event-Based Lock-In:** Implements a digital lock-in algorithm directly on PicoHarp time-tag data (PTU format) to extract AC-modulated signal components[cite: 14].
+* **Performance Benchmarking:** Includes signal-to-noise ratio (SNR) benchmarks to define regimes where the lock-in approach is superior to simple sequential ON/OFF subtraction[cite: 15, 16].
+* **Frequency-Domain Analysis:** Full FDLM pipeline for fitting frequency-domain lifetime data[cite: 17].
+* **Data Diagnostics:** Incorporates $\chi^{2}$ diagnostics and per-frequency phase-offset calibration (from fast scatter) to ensure fit quality and accuracy[cite: 17].
 
 ## Installation
 
@@ -27,8 +17,8 @@ This project provides a robust, event-based software implementation of a lock-in
 
 You must have the following installed:
 
-  * Python 3.x
-  * The necessary PicoQuant libraries or utilities to access the PTU file format (if applicable, specify which ones).
+* Python 3.x
+* The necessary PicoQuant libraries or utilities to access the PTU file format (if applicable, specify which ones).
 
 ### Via PyPI (Recommended - If Packaged)
 
@@ -100,13 +90,6 @@ The software lock-in was benchmarked against traditional ON/OFF subtraction meth
 | **Operating Range** | [cite\_start]1 kHz to 1 MHz modulation [cite: 15] | Low-frequency only |
 | **SNR Improvement** | **X% improvement** in shot-noise-limited regimes. (Replace X with actual number) | Baseline |
 
-### Lifetime Measurement Accuracy
-
-The pipeline successfully retrieves accurate photoluminescence decay lifetimes.
-
-## Contributing
-
-We welcome contributions\! Please feel free to open an issue or submit a pull request.
 
 ## License
 
