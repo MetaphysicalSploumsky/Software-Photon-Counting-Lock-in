@@ -1,4 +1,4 @@
 data
 .venv
 __pycache__
-.gitignore.DS_Store
+.DS_Store
