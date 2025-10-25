@@ -66,8 +66,8 @@ Each tool provides:
   
 ### Example CLI Output:
 
-File: modulated_signal.ptu
-RESULT — Braun photon-counting lock-in:
+Run: ```python3 braun_lockin.py <filename.ptu> ```
+RESULT:
 ```
   f_ref            : 1000.123456 Hz
   f_sample         : 50006.172800 Hz   (M = 50 bins/period)
