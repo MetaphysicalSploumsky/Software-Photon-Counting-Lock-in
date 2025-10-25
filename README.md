@@ -20,12 +20,6 @@ You must have the following installed:
 * Python 3.x
 * The necessary PicoQuant libraries or utilities to access the PTU file format (if applicable, specify which ones).
 
-### Via PyPI (Recommended - If Packaged)
-
-```bash
-pip install photon-lockin-fdlm
-```
-
 ### From Source
 
 1.  Clone the repository:
