@@ -1,4 +1,4 @@
-Here's the updated README with a Sources section:
+Here's the updated README with the new image structure:
 
 **README.md**
 
@@ -70,31 +70,33 @@ Each tool provides:
 
 ## Demo Results
 
+### Frequency-Domain Lifetime Analysis
+![FDLM Analysis](demo/fdlm_curve.png)
+*Frequency-domain lifetime measurement showing phase vs modulation frequency. The curve fit demonstrates single-exponential decay behavior with τ = 4.2 ns.*
+
+### Lifetime from Phase Histogram
+![Lifetime from Phase](demo/lifetime_phase_histogram.png)
+*Fluorescence lifetime extraction from phase histogram data. The modulation depth and phase shift provide complementary lifetime information.*
+
+### Demultiplexing Capabilities
+![Demultiplexing](demo/demultiplexing.png)
+*Signal demultiplexing performance showing separation of multiple modulated sources using phase-sensitive detection.*
+
+### Shot Noise Limited Performance
+![Shot Noise Limit](demo/shot_noise_limit.png)
+*System performance reaching the theoretical shot noise limit, demonstrating optimal signal-to-noise ratio for photon counting applications.*
+
+### Noise Rejection
+![Noise Rejection](demo/noise_rejection.png)
+*Excellent noise rejection capabilities showing clean signal recovery even in low signal-to-noise conditions.*
+
+### System Linearity
+![Linearity](demo/linearity.png)
+*Linear response of the lock-in system across different signal intensities, confirming quantitative measurement capability.*
+
 ### Phase Histogram Analysis
 ![Phase Histogram](demo/phase_histogram.png)
-*Example phase histogram showing photon distribution across modulation cycles. The clear sinusoidal pattern indicates strong modulation detection.*
-
-### Frequency-Domain Lifetime Fit
-![Lifetime Fit](demo/lifetime_fit.png)
-*Single-exponential lifetime fit from phase data across multiple modulation frequencies. The curve shows the expected arctan(ωτ) relationship.*
-
-### Lock-in Demodulation Output
-```
-File: modulated_signal.ptu
-RESULT — Braun photon-counting lock-in:
-  f_ref            : 1000.123456 Hz
-  f_sample         : 50006.172800 Hz   (M = 50 bins/period)
-  bins / photons   : 25000 / 75000
-  I_dc (mean/bin)  : 3.000000 counts/bin
-  A (mod depth)    : 0.15000000
-  phi              : 0.785398163 rad  (45.000000 deg)
-  bins_per_period  : 50
-  trimmed periods  : 1 at start and end
-```
-
-### Liu Lock-in Time Tracking
-![Liu Lock-in](demo/liu_time_trace.png)
-*Time-resolved I and Q components from Liu lock-in analysis, showing stable demodulation over the measurement duration.*
+*High-resolution phase histogram showing photon distribution across modulation cycles with clear sinusoidal modulation pattern.*
 
 ## Sources
 
@@ -121,3 +123,5 @@ RESULT — Braun photon-counting lock-in:
 - Liu lock-in works with adjustable duty cycle square waves
 
 These tools were developed for analyzing modulated fluorescence signals in time-correlated single photon counting experiments.
+
+---
