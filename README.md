@@ -1,7 +1,3 @@
-Here's the updated README with the new image structure:
-
-**README.md**
-
 # Photon Counting Lock-in Analysis Tools
 
 This repository contains a collection of Python tools for analyzing photon counting data from PicoHarp TCSPC systems using various lock-in detection methods. These scripts process PTU files containing timestamp data to extract modulated signals and perform frequency-domain lifetime measurements.
