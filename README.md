@@ -1,95 +1,88 @@
-# Single-Photon Software Lock-In & FDLM Pipeline
+**README.md**
 
-## Project Overview
+# Photon Counting Lock-in Analysis Tools
 
-This project provides a robust, event-based software implementation of a lock-in amplifier and a Frequency-Domain Lifetime Measurement (FDLM) pipeline tailored for high-speed single-photon counting data (PicoHarp time-tags). It enables the efficient recovery of both **relative intensity modulation (Magnitude)** and **phase shift (Lifetime)** from weak, shot-noise-limited Photoluminescence (PL) signals.
+This repository contains a collection of Python tools for analyzing photon counting data from PicoHarp TCSPC systems using various lock-in detection methods. These scripts process PTU files containing timestamp data to extract modulated signals and perform frequency-domain lifetime measurements.
 
-## Features
+## Overview
 
-* **Event-Based Lock-In:** Implements a digital lock-in algorithm directly on PicoHarp time-tag data (PTU format) to extract AC-modulated signal components[cite: 14].
-* **Performance Benchmarking:** Includes signal-to-noise ratio (SNR) benchmarks to define regimes where the lock-in approach is superior to simple sequential ON/OFF subtraction[cite: 15, 16].
-* **Frequency-Domain Analysis:** Full FDLM pipeline for fitting frequency-domain lifetime data[cite: 17].
-* **Data Diagnostics:** Incorporates $\chi^{2}$ diagnostics and per-frequency phase-offset calibration (from fast scatter) to ensure fit quality and accuracy[cite: 17].
+The tools implement different photon counting lock-in techniques:
 
-## Installation
+- **Braun & Libchaber method** (`braun_lockin.py`) - Traditional lock-in detection using binning and reference signals
+- **Liu method** (`liu_lockin.py`) - Reference-weighted counting with quadrature square-wave demodulation  
+- **Jakob phase analysis** (`phase_hist_jakob.py`) - Dynamic period fitting for precise phase determination
+- **Frequency-domain lifetime** (`FDLM_1.py`) - Single-exponential lifetime fitting from multi-frequency modulation data
 
-### Prerequisites
+## Files
 
-You must have the following installed:
+- `braun_lockin.py` - Braun-style lock-in amplitude/phase extraction
+- `FDLM_1.py` - Frequency-domain lifetime measurement pipeline
+- `liu_lockin.py` - Liu quadrature lock-in with square-wave references
+- `phase_hist_jakob.py` - Per-photon phase histogram analysis
+- `reader.py` - Unified PTU file reader for PicoHarp 300/330 data
+- `requirements.txt` - Python dependencies
 
-* Python 3.x
-* The necessary PicoQuant libraries or utilities to access the PTU file format (if applicable, specify which ones).
+## Requirements
 
-### From Source
-
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/Metaphysical Sploumsky/photon-lockin-fdlm.git
-    cd photon-lockin-fdlm
-    ```
-2.  Install required dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-## Usage
-
-### 1\. Lock-In Processing
-
-Import the lock-in module and process a PTU file:
-
-```python
-from lockin.processor import run_lock_in
-import numpy as np
-
-# Load PTU data (e.g., using a custom loader or PicoQuant utility)
-time_tags, markers = load_ptu_data('sample_file.ptu') 
-[cite_start]modulation_freq = 100000 # 100 kHz [cite: 15]
-
-# Recover magnitude and phase for the specific modulation frequency
-magnitude, phase = run_lock_in(time_tags, markers, modulation_freq)
-
-print(f"Recovered Magnitude: {magnitude}")
-print(f"Recovered Phase: {phase} radians")
+```bash
+pip install -r requirements.txt
 ```
 
-### 2\. FDLM Fitting Pipeline
+## Basic Usage
 
-After processing across a range of frequencies, use the FDLM module for lifetime fitting:
-
-```python
-from fdlm.fitter import fit_fdlm
-
-# Example data (Frequency, Magnitude, Phase, Error)
-freq_data = np.array([...])
-# ... load or process all your frequency data ...
-
-# Perform the fit (e.g., to a single-exponential model)
-best_fit_params, chi_squared = fit_fdlm(freq_data, model='single_exp')
-
-print(f"Best-fit lifetime: {best_fit_params['tau']} ns")
-[cite_start]print(f"Chi-Squared / DoF: {chi_squared}") # The chi-squared diagnostics [cite: 17]
+### Braun Lock-in Analysis
+```bash
+python braun_lockin.py data.ptu --M 50 --trim-ends 1
 ```
 
-## Results & Benchmarks
+### Frequency-Domain Lifetime
+```bash
+python FDLM_1.py /path/to/ptu_folder --marker-bit 1 --photon-channel 1 --N 10
+```
 
-This section is vital for showing the project's impact. Use an image tag for a visual showcase.
+### Liu Lock-in Detection  
+```bash
+python liu_lockin.py data.ptu --N 10 --duty 0.5 --bin-sec 1.0
+```
 
-### SNR Performance
+### Phase Histogram
+```bash
+python phase_hist_jakob.py data.ptu --marker-bit 1 --bins 90
+```
 
-The software lock-in was benchmarked against traditional ON/OFF subtraction methods, demonstrating its effectiveness in different signal-to-noise regimes.
+## Input Data
 
-| Metric | Lock-In Performance | ON/OFF Subtraction Performance |
-| :--- | :--- | :--- |
-| **Operating Range** | [cite\_start]1 kHz to 1 MHz modulation [cite: 15] | Low-frequency only |
-| **SNR Improvement** | **X% improvement** in shot-noise-limited regimes. (Replace X with actual number) | Baseline |
+All tools expect PicoHarp `.ptu` files (T2 time-tagged time-resolved format) with:
+- Channel 0: Reference/marker signals (modulation sync)
+- Channel 1: Photon detection events
 
+The PTU reader supports both PicoHarp 300 (legacy T2) and PicoHarp 330 (Generic T2) formats.
 
-## License
+## Output
 
-This project is licensed under the [Choose a License, e.g., MIT License] - see the `LICENSE.md` file for details.
+Each tool provides:
+- Modulation depth (A) and phase (φ) measurements
+- Statistical summaries (photon counts, reference edges)
+- CSV export options for further analysis
+- Visualization (phase histograms, lifetime fits)
 
-## Contact
+## Notes
 
-[cite\_start]Amine Sahraoui: aminesahraouics@outlook.com [cite: 2]
-[cite\_start]GitHub: [github.com/Metaphysical](https://www.google.com/url?sa=E&source=gmail&q=https://github.com/Metaphysical) Sploumsky [cite: 2]
+- Marker bits are zero-based (0-3) in all scripts
+- The Jakob phase method provides robust period estimation against frequency drift
+- Frequency-domain lifetime fitting supports both phase-only and joint amplitude-phase methods
+- Liu lock-in works with adjustable duty cycle square waves
+
+These tools were developed for analyzing modulated fluorescence signals in time-correlated single photon counting experiments.
+
+---
+
+**requirements.txt**
+
+```
+numpy>=1.19.0
+matplotlib>=3.3.0
+scipy>=1.5.0
+```
+
+The scripts require Python 3.7+ and have been tested with the listed package versions. No additional dependencies are needed beyond these common scientific Python libraries.

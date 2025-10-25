@@ -204,7 +204,6 @@ def fit_tau_joint(omegas: np.ndarray, phis: np.ndarray, amps: np.ndarray) -> flo
     return float(np.exp(sol.x[0]))
 
 
-# -------------------- Plotting --------------------
 
 def make_plot(results: List[FileResult], tau: float, show_amp: bool, outpath: Optional[Path] = None):
     results = sorted(results, key=lambda r: r.f_Hz)
@@ -241,7 +240,6 @@ def make_plot(results: List[FileResult], tau: float, show_amp: bool, outpath: Op
     return fig
 
 
-# -------------------- I/O --------------------
 
 def write_csv(results: List[FileResult], csv_path: Path):
     with open(csv_path, "w", newline="") as f:
@@ -251,7 +249,6 @@ def write_csv(results: List[FileResult], csv_path: Path):
             w.writerow([r.path.name, f"{r.f_Hz:.9g}", f"{r.omega:.9g}", f"{r.A:.6g}", f"{r.phi:.9g}", r.Nphot])
 
 
-# -------------------- CLI --------------------
 
 def main():
     ap = argparse.ArgumentParser(description="Single-decay FD lifetime from PTU folder using photon lock-in.")

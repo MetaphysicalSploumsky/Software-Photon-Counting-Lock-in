@@ -8,28 +8,23 @@ from reader import read_ptu
 
 def _correct_phase_offset(phase_fractions: np.ndarray) -> np.ndarray:
     """
-    Rotate phases so that the complex 1f phasor aligns to angle 0.
+    rotate phases so that the complex 1f phasor aligns to angle 0.
     Input/Output phases in [0, 1).
     """
     if phase_fractions.size == 0:
         return phase_fractions
     Z = np.exp(1j * 2 * np.pi * phase_fractions).mean()
-    # Offset that moves the mean phasor to angle 0
+    # moves the mean phasor to angle 0
     offset = (np.angle(Z) / (2 * np.pi)) % 1.0
     return (phase_fractions - offset) % 1.0
 
 def calculate_phase_jakob(
     chopper_times: np.ndarray, photon_times: np.ndarray, N: int = 10
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Dynamic per-photon linear fit using the last N reference ticks (Jakob et al.).
-    All times are picoseconds (int64 or float). Returns:
-      phase_fractions in [0,1), valid_mask selecting photons that had ≥N prior ticks.
-    """
+   
     if chopper_times.size < N or photon_times.size == 0:
         return np.array([], dtype=float), np.zeros(photon_times.size, dtype=bool)
 
-    # For each photon, find number of ref ticks ≤ t_ph (insertion index right)
     indices = np.searchsorted(chopper_times, photon_times, side="right")
     valid_mask = indices >= N
     if not valid_mask.any():
@@ -38,13 +33,11 @@ def calculate_phase_jakob(
     valid_indices = indices[valid_mask]
     valid_photons = photon_times[valid_mask].astype(float)
 
-    # Build windows of the last N reference times for each valid photon
     start_indices = valid_indices - N                                  # shape (M,)
     window_indices = start_indices[:, None] + np.arange(N)[None, :]    # (M, N)
     y = chopper_times[window_indices].astype(float)                     # (M, N)
 
-    # Linear fit y ≈ slope*x + intercept for each row, vectorized.
-    # Use x = 0..N-1 so that the last tick is at x_last = N-1.
+    
     x = np.arange(N, dtype=float)                                      # (N,)
     x_mean = x.mean()
     x_var = x.var()                                                    # scalar
@@ -53,11 +46,8 @@ def calculate_phase_jakob(
     slope = cov / x_var                                                # (M,) -> period (ps)
     intercept = y_mean - slope * x_mean                                # (M,)
 
-    # Time of last tick in each window is at x_last = N-1
     t_last = intercept + slope * x[-1]                                 # (M,)
-    # Fractional phase within current period
     phase_frac = (valid_photons - t_last) / slope                      # (M,)
-    # Normalize to [0,1)
     phase_frac = phase_frac % 1.0
     return phase_frac, valid_mask
 
@@ -78,7 +68,7 @@ def main():
     args = ap.parse_args()
 
     # --- Read PTU ---
-    header, ch, markers, reader = read_ptu(args.ptu)
+    header, ch, markers, reader = read_ptu(args.ptu) # type: ignore
     t_ph = ch.get(args.ch_ph, np.array([], dtype=np.int64))
     mask = 1 << args.marker_bit
     t_ref = np.asarray([tps for (mk, tps) in markers if (mk & mask) != 0], dtype=np.int64)
@@ -98,25 +88,21 @@ def main():
         print("Not enough data for phase computation (need photons and ≥N ref edges).")
         return
 
-    # --- Jakob dynamic fit ---
     phase_fractions, valid_mask = calculate_phase_jakob(t_ref, t_ph, N=args.N)
     if phase_fractions.size == 0:
         print("No photons had ≥N prior reference edges. Increase acquisition or lower N.")
         return
 
-    # Correct for constant offset, then convert to radians [0, 2π)
     corrected = _correct_phase_offset(phase_fractions)
     theta = (2 * np.pi * corrected).astype(float)
 
     used = valid_mask.sum()
     print(f"Photons used (valid windows): {used:,} / {t_ph.size:,}")
-    # Quick frequency sanity (median period from refs)
     med_dt_ps = float(np.median(np.diff(t_ref))) if t_ref.size > 1 else float("nan")
     if np.isfinite(med_dt_ps) and med_dt_ps > 0:
         f_med = 1e6 / med_dt_ps
         print(f"Median ref period ≈ {med_dt_ps*1e-6:.3f} µs → f ≈ {f_med:.3f} Hz")
 
-    # --- Histogram ---
     if args.ascii and not args.out:
         counts, edges = np.histogram(theta, bins=args.bins, range=(0, 2*np.pi))
         peak = counts.max() if counts.size else 1
@@ -128,7 +114,7 @@ def main():
         return
 
     try:
-        import matplotlib.pyplot as plt  # lazy import
+        import matplotlib.pyplot as plt  
         counts, edges = np.histogram(theta, bins=args.bins, range=(0, 2*np.pi))
         centers = 0.5 * (edges[:-1] + edges[1:])
         plt.figure(figsize=(7.5, 4.5))
